@@ -88,6 +88,4 @@ typings/
 
 # ------- PROJECT SPECIFIC IGNORES ---------- #
 
-modules.json
 settings.json
-modules
