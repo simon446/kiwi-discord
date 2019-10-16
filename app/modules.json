@@ -7,5 +7,11 @@
   },
   {
     "moduleName": "mathrendermodule"
+  },
+  {
+    "moduleName": "RandomReactionModule",
+    "settings": {
+      "ONE_IN": 10000
+    }
   }
 ]
