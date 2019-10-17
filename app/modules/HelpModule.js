@@ -1,3 +1,11 @@
+function combineHelpText(modules) {
+  let helpText = '';
+  modules.forEach(current => {
+    for (let line of current.help) helpText += line + '\n';
+  });
+  return helpText.substr(0, helpText.length - 1);
+}
+
 module.exports = class HelpModule {
   constructor(moduleSettings, modulesList) {
     this.COMMAND = moduleSettings.COMMAND ? moduleSettings.COMMAND : 'help';
@@ -9,20 +17,12 @@ module.exports = class HelpModule {
       discordMessage.channel.send({embed: {
         color: 0x38A1DA,
         title: "Help page",
-        description: this.combineHelpText()
+        description: combineHelpText(this.MODULES)
       }});
     });
   }
 
   get help() {
     return [`!**${this.COMMAND}** prints out a help page.`]
-  }
-
-  combineHelpText() {
-    let helpText = '';
-    this.MODULES.forEach(current => {
-      for (let line of current.help) helpText += line + '\n';
-    });
-    return helpText.substr(0, helpText.length - 1);
   }
 }
