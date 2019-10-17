@@ -14,11 +14,18 @@ module.exports = class HelpModule {
 
   register(bot) {
     bot.onCommand(this.COMMAND, (messageString, discordMessage) => {
-      discordMessage.channel.send({embed: {
-        color: 0x38A1DA,
-        title: "Help page",
-        description: combineHelpText(this.MODULES)
-      }});
+      
+      discordMessage.channel.send({
+          embed: {
+            color: 0x38A1DA,
+            title: "Help page",
+            description: this.HELP_TXT
+        }
+      });
+    });
+
+    bot.onReadyPreload(client => {
+      this.HELP_TXT = combineHelpText(this.MODULES);
     });
   }
 

@@ -76,6 +76,7 @@ class Bot {
     this.onCommandsListeners = new Map();
     this.onMessageListeners = [];
     this.onReadyListeners = [];
+    this.onReadyPreloadListeners = [];
   }
 
   onCommand(keyword, func) {
@@ -90,6 +91,10 @@ class Bot {
     this.onReadyListeners.push(func);
   }
 
+  onReadyPreload(func) {
+    this.onReadyPreloadListeners.push(func);
+  }
+
   /*
     THE SETUP FUNCTION, RUNS ON BOT STARTUP
   */
@@ -102,12 +107,13 @@ class Bot {
 
     client.on('ready', () => {
       console.log(`Bot logged in as ${client.user.tag}!`);
-      for (let listener of this.onReadyListeners) listener(client);
+      for (let onReadyPreload of this.onReadyPreloadListeners) onReadyPreload(client);
+      for (let onReady of this.onReadyListeners) onReady(client);
     });
 
     client.on('message', message => {
 
-      for (let listener of this.onMessageListeners) listener(message);
+      for (let onMessage of this.onMessageListeners) onMessage(message);
 
       // Check if command
       if (message.content.charAt(0) !== "!") return; // Only messages starting with ! will be processed below this line
@@ -119,8 +125,8 @@ class Bot {
       if (tmpArr.length > 1) msgTxt = tmpArr[1]; // All the users text (not including command)
       else msgTxt = "";
 
-      let func = this.onCommandsListeners.get(cmd.toLowerCase());
-      if (func) func(msgTxt, message);
+      let onCommand = this.onCommandsListeners.get(cmd.toLowerCase());
+      if (onCommand) onCommand(msgTxt, message);
     });
 
     client.login(LOGIN_TOKEN);
