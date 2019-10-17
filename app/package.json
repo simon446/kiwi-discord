@@ -1,20 +1,26 @@
 {
-  "name": "discordbot",
+  "name": "kiwi-discord",
   "version": "1.0.0",
-  "description": "",
+  "description": "A discord bot",
   "main": "bot.js",
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "file-exists": "^5.0.1",
+    "jsonfile": "^5.0.0",
+    "mathrendermodule": "^1.0.6"
+  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/froadus/kiwi-discord.git"
+  },
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "discord.js": "^11.4.2",
-    "file-exists": "^5.0.1",
-    "jsonfile": "^5.0.0",
-    "jsonsavefile": "^1.0.2",
-    "mathrendermodule": "^1.0.6",
-    "moment": "^2.24.0",
-    "xml2js": "^0.4.19"
-  }
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/froadus/kiwi-discord/issues"
+  },
+  "homepage": "https://github.com/froadus/kiwi-discord#readme"
 }
