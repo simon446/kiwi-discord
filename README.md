@@ -1,6 +1,6 @@
 # kiwi
 
-A discord bot.
+A modular discord bot.
 
 ## Commands
 
@@ -39,7 +39,7 @@ Register your bot at https://discordapp.com/developers/applications/.
 
    ```json
    {
-      "DISCORD_BOT_TOKEN": "paste your token for developent bot here"
+      "DISCORD_BOT_TOKEN": "paste your token for development bot here"
    }
    ```
 
@@ -109,7 +109,7 @@ To install a custom module, type `npm i <module name>`. Also, add this to `modul
 
 ## Write your own module (Hello World example)
 
-Modules can be stored in three type of ways:
+Modules can be stored in three ways:
 
 1. Single file module in `app/modules` directory. For example: `app/modules/mdb-somemodule.js`.
 2. Alternatively, this file can be renamed `index.js` and be placed in a subdirectory called `mdb-somemodule`. For example `app/modules/mdb-somemodule/index.js` points to the same file as above.
