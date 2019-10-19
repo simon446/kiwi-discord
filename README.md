@@ -12,6 +12,10 @@ A modular discord bot.
 
 **any message** Responds with 🎉 with a probability of 0.01%
 
+!**db key=value** to set a value in the database.
+
+!**db-json json_obj** where json_obj will replace current object.
+
 ## Installation using docker
 
 Run container in current console window.
