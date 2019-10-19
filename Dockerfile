@@ -7,4 +7,4 @@ COPY app/package.json app/package-lock.json /app/
 RUN npm i
 
 COPY app/ /app/
-CMD node /app/bot
+CMD node /app/bot --production

@@ -3,9 +3,10 @@
  */
 
 module.exports = class DiscordDB {
-    constructor({ DB_CHANNEL_NAME='bot_db', COMMAND='db' }) {
+    constructor({ DB_CHANNEL_NAME='bot_db', COMMAND='db', COMMAND_OBJ='db-json' }) {
         this.DB_CHANNEL_NAME = DB_CHANNEL_NAME;
         this.COMMAND = COMMAND
+        this.COMMAND_OBJ = COMMAND_OBJ
     }
 
     register(bot) {
@@ -23,7 +24,19 @@ module.exports = class DiscordDB {
                 db[args[0]] = undefined;
             }
             await this.writeDB(db);
-            return discordMessage.channel.send(`\`\`\`json\n{ ${args[0]}: ${db[args[0]]} }\n\`\`\``)
+            return discordMessage.channel.send(`\`\`\`json\n{ "${args[0]}": ${db[args[0]]} }\n\`\`\``)
+        });
+
+        bot.onCommand(this.COMMAND_OBJ, async (messageString, discordMessage) => {
+            let db;
+            try {
+                db = JSON.parse(messageString);
+            } catch (err) {
+                db = {};
+                return discordMessage.channel.send('Invalid input')
+            }
+            await this.writeDB(db);
+            return discordMessage.channel.send(`\`\`\`json\n${JSON.stringify(db, null, 4)}\`\`\``)
         });
 
         bot.onReadyPreload(client => {
@@ -75,6 +88,7 @@ module.exports = class DiscordDB {
     }
 
     get help() {
-        return [`!**${this.COMMAND} key=value** to set a value in the database.`]
+        return [`!**${this.COMMAND} key=value** to set a value in the database.`,
+                `!**${this.COMMAND_OBJ} json_obj** where json_obj will replace current object.`]
     }
 }

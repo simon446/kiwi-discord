@@ -6,6 +6,8 @@ module.exports = class Module {
 
   register(bot) {
     bot.onReady(client => {
+      if (!bot.isProduction) return; // Only send message on production bot
+
       let channel = client.channels.find(channel => channel.name === this.CHANNEL);
       if (channel === null) console.log(`Cannot send startup message, channel ${this.CHANNEL} not found.`)
       else {

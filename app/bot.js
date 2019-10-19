@@ -95,6 +95,10 @@ class Bot {
     this.onReadyPreloadListeners.push(func);
   }
 
+  get isProduction() {
+    return process.argv[2] === '--production';
+  }
+
   /*
     THE SETUP FUNCTION, RUNS ON BOT STARTUP
   */
