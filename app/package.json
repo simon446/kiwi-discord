@@ -4,10 +4,12 @@
   "description": "A discord bot",
   "main": "bot.js",
   "dependencies": {
+    "convert-svg-to-png": "^0.5.0",
     "discord.js": "^11.5.1",
     "file-exists": "^5.0.1",
     "jsonfile": "^5.0.0",
-    "mathrendermodule": "^1.0.6"
+    "mathjax-node": "^2.1.1",
+    "simple-svg-tools": "^1.1.12"
   },
   "devDependencies": {},
   "scripts": {
