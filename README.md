@@ -102,22 +102,13 @@ Setup in modules.json:
 }
 ```
 
-## Custom Modules
-
-To install a custom module, type `npm i <module name>`. Also, add this to `modules.json`. Note that default modules don't need installation and can therefore not be installed using `npm`. Here is a list of all currently available custom modules.
-
-| Module      | Author        | Description   |
-|------------------|---------------|-------|
-| [mdb-wolframalpha](https://www.npmjs.com/package/mdb-wolframalpha) | [froadus](https://github.com/froadus/) | Uses https://www.wolframalpha.com/ to resolve math expressions and return step-by-step solutions to problems. |
-| [mdb-notify](https://www.npmjs.com/package/mdb-notify) | [froadus](https://github.com/froadus/) | A module that can create notifications that will be sent by a discord bot at a specified time. |
-
 ## Write your own module (Hello World example)
 
 Modules can be stored in three ways:
 
-1. Single file module in `app/modules` directory. For example: `app/modules/mdb-somemodule.js`.
-2. Alternatively, this file can be renamed `index.js` and be placed in a subdirectory called `mdb-somemodule`. For example `app/modules/mdb-somemodule/index.js` points to the same file as above.
-3. Lastly, a module (stored as in alt. 2) can be published to npm. Then it can be installed with `npm i mdb-somemodule`. Notice that with this method this module will not be visible in the `modules` directory as it is installed in the `node_modules` directory instead.
+1. Single file module in `app/modules` directory. For example: `app/modules/somemodule.js`.
+2. Alternatively, this file can be renamed `index.js` and be placed in a subdirectory called `somemodule`. For example `app/modules/somemodule/index.js` points to the same file as above.
+3. **(Deprecated)** Lastly, a module (stored as in alt. 2) can be published to npm. Then it can be installed with `npm i somemodule`. Notice that with this method this module will not be visible in the `modules` directory as it is installed in the `node_modules` directory instead.
 
 A file named `HelloWorldModule.js` is the module in this example:
 
