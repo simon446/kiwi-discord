@@ -24,7 +24,9 @@ module.exports = class DiscordDB {
                 db[args[0]] = undefined;
             }
             await this.writeDB(db);
-            return discordMessage.channel.send(`\`\`\`json\n{ "${args[0]}": ${db[args[0]]} }\n\`\`\``)
+            let o = {}
+            o[args[0]] = db[args[0]];
+            return discordMessage.channel.send(`\`\`\`json\n${ JSON.stringify(o) }\n\`\`\``)
         });
 
         bot.onCommand(this.COMMAND_OBJ, async (messageString, discordMessage) => {
