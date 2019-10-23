@@ -5,6 +5,8 @@ const Discord = require('discord.js');
 const jsonfile = require('jsonfile');
 const fileExists = require('file-exists');
 
+const KEY_FORMAT = /^[A-Z_]*$/;
+
 let LOGIN_TOKEN,
   moduleSettings,
   moduleSettingsMap = new Map(),
@@ -55,10 +57,9 @@ function initModules() {
     let module = new Module();
 
     forEachObj(moduleSetting, (key, val) => {
-      const keyFormat = /^[A-Z_]*$/;
-      if (key.match(keyFormat)) {
+      if (key.match(KEY_FORMAT)) {
         module[key] = val
-      } else throw new Error(`Module settings error: key "${key}" does not match required key format ${keyFormat}`);
+      } else throw new Error(`Module settings error: key "${key}" in ${modulesFilePath} does not match required key format ${KEY_FORMAT}`);
     });
 
     modules.set(moduleSetting['NAME'], module);
@@ -105,6 +106,10 @@ class Bot {
     return process.argv[2] === '--production';
   }
 
+  isValidModuleKey(key) {
+    return key.match(KEY_FORMAT) !== null;
+  }
+
   /*
     THE SETUP FUNCTION, RUNS ON BOT STARTUP
   */
@@ -113,20 +118,36 @@ class Bot {
 
     LOGIN_TOKEN = settings.DISCORD_BOT_TOKEN;
 
-    client.on('ready', () => {
+    client.on('ready', async () => {
       console.log(`Bot logged in as ${client.user.tag}!`);
       //for (let onReadyPreload of this.onReadyPreloadListeners) onReadyPreload(client);
       //for (let onReady of this.onReadyListeners) onReady(client);
+      let moduleArr = Array.from(modules);
 
       // Run preload
-      modules.forEach(currentModule => {
-        if (currentModule.preload !== undefined) currentModule.preload(instance, client)
-      });
+      for (let e of moduleArr) {
+        const currentModule = e[1];
+        if (currentModule.preload !== undefined) {
+          if (currentModule.preload.constructor.name === "AsyncFunction") {
+            await currentModule.preload(instance, client)
+          } else {
+            currentModule.preload(instance, client)
+          }
+        }
+      }
       
       // Run ready
-      modules.forEach(currentModule => {
-        if (currentModule.ready !== undefined) currentModule.ready(instance, client)
-      });
+      for (let e of moduleArr) {
+        const currentModule = e[1];
+        if (currentModule.ready !== undefined) {
+          if (currentModule.ready.constructor.name === "AsyncFunction") {
+            await currentModule.ready(instance, client)
+          } else {
+            currentModule.ready(instance, client)
+          }
+        }
+      }
+
     });
 
     client.on('message', message => {
