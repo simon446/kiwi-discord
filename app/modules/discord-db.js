@@ -3,7 +3,7 @@
  */
 
 module.exports = class DiscordDB {
-    ready(bot, client) {
+    preload(bot, client) {
         bot.onCommand(this.COMMAND, async (messageString, discordMessage) => {
             let args = messageString.split('=');
             args = args.map(arg => arg.trim());

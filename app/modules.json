@@ -1,5 +1,11 @@
 [
   {
+    "NAME": "discord-db",
+    "COMMAND": "db",
+    "COMMAND_OBJ": "db-json",
+    "DB_CHANNEL_NAME": "bot_db"
+  },
+  {
     "NAME": "HelpModule",
     "COMMAND": "help"
   },
@@ -7,12 +13,6 @@
     "NAME": "HelloWorldModule",
     "COMMAND": "hello",
     "TEXT": "Hello world!"
-  },
-  {
-    "NAME": "discord-db",
-    "COMMAND": "db",
-    "COMMAND_OBJ": "db-json",
-    "DB_CHANNEL_NAME": "bot_db"
   },
   {
     "NAME": "messageupdatemodule",
@@ -26,5 +26,9 @@
   {
     "NAME": "mathrendermodule",
     "COMMAND": "r"
+  },
+  {
+    "NAME": "easy-settings",
+    "RESTART_COMMAND": "restart"
   }
 ]

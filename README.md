@@ -46,61 +46,10 @@ Register your bot at https://discordapp.com/developers/applications/.
       "DISCORD_BOT_TOKEN": "paste your token for development bot here"
    }
    ```
+   
+   NOTE: `settings.json` will not be commited to this repository.
 
 5. Start the bot by typing `node bot.js` in `app` dir.
-
-At first launch, the program will exit and you will have to paste your discord bot token (create a discord bot [here](https://discordapp.com/developers/applications/)) in the *settings.json* file. Now the bot can be started and you should see the message `Logged in as <bot name>`. To customize and install new modules, please read **Available modules** below.
-
-## Default modules
-
-```json
-{
-  "moduleName": "module name here",
-  "settings": {
-    "_REQUIRED": "required module setting",
-    "OPTIONAL": "optional module setting (probably defaults to some value otherwise)"
-  }
-}
-```
-
-Note that required module settings always begin with `_`.
-
-If necessary (follow instructions regarding your module), add required global settings in `settings.json`.
-
-```json
-{
-    "DISCORD_BOT_TOKEN": "paste your token here (required)",
-    "SOME_OTHER_SETTING": "for example; default channel id"
-}
-```
-
-### HelloWorldModule
-
-A basic module that responds with `TEXT` when !`COMMAND` is entered.
-
-Setup in modules.json:
-
-```javascript
-{
-  "moduleName": "HelloWorldModule",
-  "settings": {
-    "COMMAND": "hello",
-    "TEXT": "Hello world!"
-  }
-}
-```
-
-### HelpModule
-
-A basic module that combines help info from other modules and sends it as a message.
-
-Setup in modules.json:
-
-```javascript
-{
-  "moduleName": "HelpModule"
-}
-```
 
 ## Write your own module (Hello World example)
 
