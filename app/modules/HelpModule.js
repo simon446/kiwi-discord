@@ -1,35 +1,36 @@
 function combineHelpText(modules) {
   let helpText = '';
   modules.forEach(current => {
-    for (let line of current.help) helpText += line + '\n';
+    if (current.help !== undefined) {
+      for (let line of current.help()) helpText += line + '\n';
+    }
   });
   return helpText.substr(0, helpText.length - 1);
 }
 
 module.exports = class HelpModule {
-  constructor(moduleSettings, modulesList) {
-    this.COMMAND = moduleSettings.COMMAND ? moduleSettings.COMMAND : 'help';
-    this.MODULES = modulesList;
+
+  preload(bot) {
+    this.bot = bot;
   }
 
-  register(bot) {
-    bot.onCommand(this.COMMAND, (messageString, discordMessage) => {
-      
+  ready(bot) {
+    bot.onCommand(this.COMMAND, (textMessage, discordMessage) => {
       discordMessage.channel.send({
           embed: {
             color: 0x38A1DA,
             title: "Help page",
-            description: this.HELP_TXT
+            description: this.getHelpText()
         }
       });
     });
-
-    bot.onReadyPreload(client => {
-      this.HELP_TXT = combineHelpText(this.MODULES);
-    });
   }
 
-  get help() {
+  getHelpText() {
+    return combineHelpText(this.bot.modules);
+  }
+
+  help() {
     return [`!**${this.COMMAND}** prints out a help page.`]
   }
 }

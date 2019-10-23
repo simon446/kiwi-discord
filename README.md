@@ -4,17 +4,17 @@ A modular discord bot.
 
 ## Commands
 
-!**help** prints out a help page.
+ !**help** prints out a help page. 
 
-!**hello** Responds with `Hello world!`.
+!**hello** Responds with `Hello world!`. 
 
-!**r expr** Responds with a rendered version of expr using http://asciimath.org/.
+!**db key=value** to set a value in the database. 
 
-**any message** Responds with 🎉 with a probability of 0.01%
+!**db-json json_obj** where json_obj will replace current object. 
 
-!**db key=value** to set a value in the database.
+**any message** Responds with 🎉 with a probability of 0.01% 
 
-!**db-json json_obj** where json_obj will replace current object.
+!**r expr** Responds with a rendered version of expr using http://asciimath.org/. 
 
 ## Installation using docker
 
@@ -114,25 +114,17 @@ A file named `HelloWorldModule.js` is the module in this example:
 
 ```javascript
 module.exports = class HelloWorldModule {
-  constructor(moduleSettings) {
-    let settings = Object.assign({
-      COMMAND: "hello",
-      TEXT: "Hello world!"
-    }, moduleSettings);
 
-    this.TEXT = settings.TEXT;
-    this.COMMAND = settings.COMMAND;
-  }
+    ready(bot, client) {
+        bot.onCommand(this.COMMAND, (textMessage, discordMessage) => {
+            discordMessage.channel.send(this.TEXT);
+        });
+    }
 
-  register(bot) {
-    bot.onCommand(this.COMMAND, (messageString, discordMessage) => {
-      discordMessage.channel.send(this.TEXT);
-    });
-  }
+    help() {
+        return [`!**${this.COMMAND}** Responds with \`${this.TEXT}\`.`];
+    }
 
-  get help() {
-    return [`!**${this.COMMAND}** Responds with \`${this.TEXT}\`.`]
-  }
 }
 ```
 
@@ -141,11 +133,9 @@ Your `modules.json` should look like this:
 ```json
 [
   {
-    "moduleName": "HelloWorldModule",
-    "settings": {
-      "COMMAND": "hello",
-      "TEXT": "Hello world!"
-    }
+    "NAME": "HelloWorldModule",
+    "COMMAND": "hello",
+    "TEXT": "Hello world!"
   }
 ]
 
