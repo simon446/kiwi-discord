@@ -1,5 +1,5 @@
 var mjAPI = require("mathjax-node");
-const { convert } = require('convert-svg-to-png');
+const svg2img = require('svg2img');
 const tools = require('simple-svg-tools');
 
 mjAPI.start();
@@ -37,6 +37,15 @@ function setSvgColorPalette(svg, palette) {
   });
 }
 
+function svg2png(svgString, settings) {
+  return new Promise((resolve, reject) => {
+    svg2img(svgString, settings, function(error, buffer) {
+        if (error) return reject(error);
+        resolve(buffer);
+    });
+  })
+}
+
 async function asciiMathToPng(expr, scale=0.04) {
   const svgStr = await asciiMathToSvg(expr);
 
@@ -47,11 +56,7 @@ async function asciiMathToPng(expr, scale=0.04) {
 
   let newSvg = await setSvgColorPalette(svg, palette);
   
-  return await convert(newSvg.toString(), {
-    height: newSvg.height * scale, 
-    background:'#36393F',
-    puppeteer: {args: ['--no-sandbox', '--disable-setuid-sandbox']}
-  });
+  return svg2png(newSvg.toString(), {'width': newSvg.width * scale, 'height': newSvg.height * scale});
 }
 
 module.exports = asciiMathToPng;
