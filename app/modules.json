@@ -1,23 +1,30 @@
 [
   {
-    "moduleName": "HelpModule"
+    "NAME": "HelpModule",
+    "COMMAND": "help"
   },
   {
-    "moduleName": "HelloWorldModule"
+    "NAME": "HelloWorldModule",
+    "COMMAND": "hello",
+    "TEXT": "Hello world!"
   },
   {
-    "moduleName": "mathrendermodule"
+    "NAME": "discord-db",
+    "COMMAND": "db",
+    "COMMAND_OBJ": "db-json",
+    "DB_CHANNEL_NAME": "bot_db"
   },
   {
-    "moduleName": "RandomReactionModule",
-    "settings": {
-      "ONE_IN": 10000
-    }
+    "NAME": "messageupdatemodule",
+    "CHANNEL": "bot"
   },
   {
-    "moduleName": "messageupdatemodule"
+    "NAME": "RandomReactionModule",
+    "ONE_IN": 10000,
+    "REACTION": "🎉"
   },
   {
-    "moduleName": "discord-db"
+    "NAME": "mathrendermodule",
+    "COMMAND": "r"
   }
 ]

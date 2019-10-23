@@ -3,13 +3,7 @@
  */
 
 module.exports = class DiscordDB {
-    constructor({ DB_CHANNEL_NAME='bot_db', COMMAND='db', COMMAND_OBJ='db-json' }) {
-        this.DB_CHANNEL_NAME = DB_CHANNEL_NAME;
-        this.COMMAND = COMMAND
-        this.COMMAND_OBJ = COMMAND_OBJ
-    }
-
-    register(bot) {
+    ready(bot, client) {
         bot.onCommand(this.COMMAND, async (messageString, discordMessage) => {
             let args = messageString.split('=');
             args = args.map(arg => arg.trim());
@@ -40,18 +34,16 @@ module.exports = class DiscordDB {
             await this.writeDB(db);
             return discordMessage.channel.send(`\`\`\`json\n${JSON.stringify(db, null, 4)}\`\`\``)
         });
-
-        bot.onReadyPreload(client => {
-            this.CLIENT = client;
-        });
+            
+        this.client = client;
     }
 
-    get DB_CHANNEL() {
-        return this.CLIENT.channels.find(channel => channel.name === this.DB_CHANNEL_NAME);
+    get db_channel() {
+        return this.client.channels.find(channel => channel.name === this.DB_CHANNEL_NAME);
     }
 
     async dbMessage() {
-        let channel = this.DB_CHANNEL;
+        let channel = this.db_channel;
         if (channel === null) console.log(`Channel ${this.DB_CHANNEL_NAME} not found.`)
         else {
             try {
@@ -79,17 +71,17 @@ module.exports = class DiscordDB {
             msgStr = '```json\n' + JSON.stringify(newObject, null, 4) + '```';
         } catch (err) {
             msgStr = '```json\n' + JSON.stringify(newObject, null, 4) + '```';
-            return await this.DB_CHANNEL.send(msgStr)
+            return await this.db_channel.send(msgStr)
         }
         
-        if (message.author.id === this.CLIENT.user.id) { // This bot sent the message and can edit it
+        if (message.author.id === this.client.user.id) { // This bot sent the message and can edit it
             return await message.edit(msgStr)
         } else { // Send new message that this bot can edit
-            return await this.DB_CHANNEL.send(msgStr)
+            return await this.db_channel.send(msgStr)
         }
     }
 
-    get help() {
+    help() {
         return [`!**${this.COMMAND} key=value** to set a value in the database.`,
                 `!**${this.COMMAND_OBJ} json_obj** where json_obj will replace current object.`]
     }

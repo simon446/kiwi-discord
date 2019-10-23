@@ -6,9 +6,8 @@ const jsonfile = require('jsonfile');
 const fileExists = require('file-exists');
 
 let LOGIN_TOKEN,
-  BOT_OWNER,
-
   moduleSettings,
+  moduleSettingsMap = new Map(),
   modules = new Map(),
   modulePath = './modules',
 
@@ -29,24 +28,40 @@ function requireModule(moduleName) {
   return require(moduleName);
 }
 
+function forEachObj(obj, callback) {
+  for (var prop in obj) {
+      if (!obj.hasOwnProperty(prop)) continue;
+      callback(prop, obj[prop]);
+  }
+}
+
 function initModules() {
   try {
     moduleSettings = jsonfile.readFileSync(modulesFilePath);
   } catch (err) {
     moduleSettings = [
       {
-        moduleName: "HelpModule"
+        NAME: "HelpModule"
       },
       {
-        moduleName: "HelloWorldModule"
+        NAME: "HelloWorldModule"
       }
     ];
     jsonfile.writeFileSync(modulesFilePath, moduleSettings, { spaces: 2 });
     return false;
   }
   for (let moduleSetting of moduleSettings) {
-    let moduleClass = requireModule(moduleSetting.moduleName);
-    modules.set(moduleSetting.moduleName, new moduleClass(moduleSetting.settings === undefined ? {} : moduleSetting.settings, modules, client, settings));
+    let Module = requireModule(moduleSetting['NAME']);
+    let module = new Module();
+
+    forEachObj(moduleSetting, (key, val) => {
+      const keyFormat = /^[A-Z_]*$/;
+      if (key.match(keyFormat)) {
+        module[key] = val
+      } else throw new Error(`Module settings error: key "${key}" does not match required key format ${keyFormat}`);
+    });
+
+    modules.set(moduleSetting['NAME'], module);
   }
   return true;
 }
@@ -70,13 +85,12 @@ if (!modulesInit || !settingsInit) process.exit();
 
 class Bot {
 
-  constructor(botModulesStringArray) {
-    this.botModulesStringArray = botModulesStringArray;
-
+  constructor() {
     this.onCommandsListeners = new Map();
     this.onMessageListeners = [];
     this.onReadyListeners = [];
     this.onReadyPreloadListeners = [];
+    this.modules = modules;
   }
 
   onCommand(keyword, func) {
@@ -85,14 +99,6 @@ class Bot {
 
   onMessage(func) {
     this.onMessageListeners.push(func);
-  }
-
-  onReady(func) {
-    this.onReadyListeners.push(func);
-  }
-
-  onReadyPreload(func) {
-    this.onReadyPreloadListeners.push(func);
   }
 
   get isProduction() {
@@ -107,16 +113,23 @@ class Bot {
 
     LOGIN_TOKEN = settings.DISCORD_BOT_TOKEN;
 
-    modules.forEach(currentModule => currentModule.register(instance));
-
     client.on('ready', () => {
       console.log(`Bot logged in as ${client.user.tag}!`);
-      for (let onReadyPreload of this.onReadyPreloadListeners) onReadyPreload(client);
-      for (let onReady of this.onReadyListeners) onReady(client);
+      //for (let onReadyPreload of this.onReadyPreloadListeners) onReadyPreload(client);
+      //for (let onReady of this.onReadyListeners) onReady(client);
+
+      // Run preload
+      modules.forEach(currentModule => {
+        if (currentModule.preload !== undefined) currentModule.preload(instance, client)
+      });
+      
+      // Run ready
+      modules.forEach(currentModule => {
+        if (currentModule.ready !== undefined) currentModule.ready(instance, client)
+      });
     });
 
     client.on('message', message => {
-
       for (let onMessage of this.onMessageListeners) onMessage(message);
 
       // Check if command
