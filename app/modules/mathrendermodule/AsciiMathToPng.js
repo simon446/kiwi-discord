@@ -4,11 +4,11 @@ const tools = require('simple-svg-tools');
 
 mjAPI.start();
 
-function asciiMathToSvg(expr) {
+function mathToSvg(expr, format="AsciiMath") {
   return new Promise((res, rej) => {
     mjAPI.typeset({
       math: expr,
-      format: "AsciiMath",
+      format: format,
       svg: true,
     }, function (data) {
       if (!data.errors) {res(data.svg)}
@@ -46,8 +46,8 @@ function svg2png(svgString, settings) {
   })
 }
 
-async function asciiMathToPng(expr, scale=0.04) {
-  const svgStr = await asciiMathToSvg(expr);
+async function mathToPng(expr, format, scale=0.04) {
+  const svgStr = await mathToSvg(expr, format);
 
   let svg = new tools.SVG(svgStr);
 
@@ -59,4 +59,4 @@ async function asciiMathToPng(expr, scale=0.04) {
   return svg2png(newSvg.toString(), {'width': newSvg.width * scale, 'height': newSvg.height * scale});
 }
 
-module.exports = asciiMathToPng;
+module.exports = mathToPng;
