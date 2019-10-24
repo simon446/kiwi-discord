@@ -30,5 +30,10 @@
   {
     "NAME": "easy-settings",
     "RESTART_COMMAND": "restart"
+  },
+  {
+    "NAME": "wolfram",
+    "COMMAND": "s",
+    "APP_ID": "{APP_ID}"
   }
 ]

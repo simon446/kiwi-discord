@@ -1,22 +1,27 @@
-const asciiMathToPng = require('./AsciiMathToPng');
+const mathToPng = require('./AsciiMathToPng');
 
 module.exports = class MathRenderModule {
 
     ready(bot) {
         bot.onCommand(this.COMMAND, async (messageString, discordMessage) => {
-            let png;
             try {
-                png = await asciiMathToPng(messageString);
+                discordMessage.channel.send(await this.mathToMessage(messageString, "AsciiMath"));
             } catch (err) {
-                console.log(err);
+                console.log(err)
                 discordMessage.channel.send("Error converting input.");
-                return;
             }
-
-            discordMessage.channel.send({
-                files: [{attachment: png, name: "math.png"}]
-            });
         });
+    }
+
+    async mathToMessage(expr, inputFormat) {
+        let png;
+        try {
+            png = await mathToPng(expr, inputFormat);
+        } catch (err) {throw err}
+
+        return {
+            files: [{attachment: png, name: "math.png"}]
+        }
     }
 
     help() {

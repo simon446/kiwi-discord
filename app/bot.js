@@ -6,6 +6,7 @@ const jsonfile = require('jsonfile');
 const fileExists = require('file-exists');
 
 const KEY_FORMAT = /^[A-Z_]*$/;
+const SECRET_VAL_FORMAT = /^{([A-Z_]+)}$/;
 
 let LOGIN_TOKEN,
   moduleSettings,
@@ -41,23 +42,24 @@ function initModules() {
   try {
     moduleSettings = jsonfile.readFileSync(modulesFilePath);
   } catch (err) {
-    moduleSettings = [
-      {
-        NAME: "HelpModule"
-      },
-      {
-        NAME: "HelloWorldModule"
-      }
-    ];
+    moduleSettings = [];
     jsonfile.writeFileSync(modulesFilePath, moduleSettings, { spaces: 2 });
     return false;
   }
+
   for (let moduleSetting of moduleSettings) {
     let Module = requireModule(moduleSetting['NAME']);
     let module = new Module();
 
     forEachObj(moduleSetting, (key, val) => {
-      if (key.match(KEY_FORMAT)) {
+      let match = SECRET_VAL_FORMAT.exec(val);
+      if (match) {
+        module[key] = process.env[match[1]];
+        if (module[match[1]] === undefined) {
+          module[key] = settings[match[1]]
+          if (module[key] === undefined) throw new Error(`Secret key "${val}" in ${modulesFilePath} was not found.`)
+        }
+      } else if (key.match(KEY_FORMAT)) {
         module[key] = val
       } else throw new Error(`Module settings error: key "${key}" in ${modulesFilePath} does not match required key format ${KEY_FORMAT}`);
     });
@@ -71,9 +73,7 @@ function initSettings() {
   try {
     settings = jsonfile.readFileSync(settingsFilePath);
   } catch (err) {
-    settings = {
-      DISCORD_BOT_TOKEN: process.env.DISCORD_BOT_TOKEN,
-    };
+    settings = {};
     //jsonfile.writeFileSync(settingsFilePath, settings, { spaces: 2 });
     return true;
   }
@@ -116,12 +116,11 @@ class Bot {
   async start() {
     let instance = this;
 
-    LOGIN_TOKEN = settings.DISCORD_BOT_TOKEN;
+    LOGIN_TOKEN =  settings.DISCORD_BOT_TOKEN === undefined ? process.env.DISCORD_BOT_TOKEN : settings.DISCORD_BOT_TOKEN;
+
+    if (LOGIN_TOKEN === undefined) throw new Error(`DISCORD_BOT_TOKEN was not found.`)
 
     client.on('ready', async () => {
-      console.log(`Bot logged in as ${client.user.tag}!`);
-      //for (let onReadyPreload of this.onReadyPreloadListeners) onReadyPreload(client);
-      //for (let onReady of this.onReadyListeners) onReady(client);
       let moduleArr = Array.from(modules);
 
       // Run preload
@@ -147,6 +146,9 @@ class Bot {
           }
         }
       }
+
+      console.log(`Bot logged in as ${client.user.tag}!`);
+      console.log(`All bot modules have been loaded!`);
 
     });
 
