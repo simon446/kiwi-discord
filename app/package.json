@@ -10,7 +10,7 @@
     "jsonfile": "^5.0.0",
     "mathjax-node": "^2.1.1",
     "simple-svg-tools": "^1.1.12",
-    "svg2img": "^0.6.1"
+    "svg2img": "^1.0.0-beta.2"
   },
   "devDependencies": {},
   "scripts": {
